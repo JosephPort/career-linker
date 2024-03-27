@@ -1,6 +1,8 @@
 const Listing = require('../models/ListingModel')
 const User = require('../models/UserModel')
 
+//Creates new listings and adds to DB
+//PRIVATE
 const createListing = async (req, res) => {
   const { title, company, location, description } = req.body
 
@@ -8,6 +10,7 @@ const createListing = async (req, res) => {
     const creator = req.user._id
 
     const listing = await Listing.create({ title, company, location, description, creator })
+
     res.status(200).json({ 
       message: "Created Listing",
       listing: listing
@@ -17,32 +20,53 @@ const createListing = async (req, res) => {
   }
 }
 
+//Gets the user's created listings
+//PRIVATE
 const getUserListing = async (req, res) => {
-  const listings = await Listing.find({ 
-    creator: req.user._id 
-  })
-  res.status(200).json(listings)
-}
-
-const getAllListings = async (req, res) => {
-  const allListings = await Listing.find()
-  res.status(200).json(allListings)
-}
-
-const getSingleListing = async (req, res) => {
-  const listing = await Listing.findById(req.params.id)
-  res.status(200).json(listing)
-}
-
-const applyListing = async (req, res) => {
-  const listing = await Listing.findById(req.params.listingID)
-
-  if(listing.applicants.includes(req.user._id)){
-    return res.status(404).json({error: "Already applied"})
+  try{
+    const listings = await Listing.find({ 
+      creator: req.user._id 
+    })
+    res.status(200).json(listings)
+  } catch (err) {
+    console.log(err.message)
   }
+}
 
-  listing.applicants.push(req.user._id)
+//Gets all listings found inside the database
+//PUBLIC
+const getAllListings = async (req, res) => {
+  try{
+    const allListings = await Listing.find()
+    res.status(200).json(allListings)
+  } catch (err) {
+    console.log(err.message)
+  }
+}
+
+//Get a single listing from the database
+//PUBLIC
+const getSingleListing = async (req, res) => {
+  try{
+    const listing = await Listing.findById(req.params.id)
+    res.status(200).json(listing)
+  } catch (err) {
+    console.log(err.message)
+  }
+}
+
+//Apply to job listing and add the current user to the listing's application array
+//PRIVATE
+const applyListing = async (req, res) => {
   try {
+    const listing = await Listing.findById(req.params.id)
+
+    if(listing.applicants.includes(req.user._id)){
+      return res.status(404).json({error: "Already applied"})
+    }
+  
+    listing.applicants.push(req.user._id)
+
     await listing.save()
     res.status(200).json({ 
       message: "Added application",
@@ -52,17 +76,35 @@ const applyListing = async (req, res) => {
   }
 }
 
+//View all applicants for a single listing
+//PRIVATE
 const viewApplicants = async (req, res) => {
-  const listing = await Listing.findById(req.params.id)
+  try{
+    const listing = await Listing.findById(req.params.id)
 
-  const users = await User.find({ _id: { $in: listing.applicants } });
+    if (!listing){
+      return res.status(400).json({
+        error: "Listing not found"
+      })
+    }
 
-  const applicantNames = users.map(user => `${user.first_name} ${user.last_name}`);
+    const users = await User.find({ _id: { $in: listing.applicants } });
 
-  return res.status(200).json({
-    names: applicantNames,
-    listing: listing
-  })
+    if (!users){
+      return res.status(400).json({
+        error: "No users found"
+      })
+    }
+  
+    const applicantNames = users.map(user => `${user.first_name} ${user.last_name}`);
+  
+    return res.status(200).json({
+      names: applicantNames,
+      listing: listing
+    })
+  } catch (err) {
+    console.log(err.message)
+  }
 }
 
 module.exports = {

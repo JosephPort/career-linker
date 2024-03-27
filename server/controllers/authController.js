@@ -6,6 +6,7 @@ require('dotenv').config()
 const registerUser = async (req, res) => {
   const { email, first_name, last_name, username, password } = req.body
   
+  //Checks if username/email already exists in DB
   const notUnique = await User.findOne({$or: [
     {username: username},
     {email: email}
@@ -14,6 +15,7 @@ const registerUser = async (req, res) => {
   if(notUnique)
     return res.status(400).json({ error: "Username or email already in use" })
 
+  //Performs hashing 12x, recommended minimum: 10x
   const hashed_pass = await bcrypt.hash(password, 12)
 
   try {
@@ -33,6 +35,7 @@ const loginUser = async (req, res) => {
 
   const user = await User.findOne({ username });
 
+  //Checks if user exists or passwords are the same
   if (!user || !await bcrypt.compare(password, user.hashed_pass))
     return res.status(400).json({ error: "Username or password is incorrect" });
 
@@ -42,11 +45,8 @@ const loginUser = async (req, res) => {
     token: createJWT(user._id) });
 }
 
-const getUserInfo = async (req, res) => {
-  res.status(200).json(req.user)
-}
-
 const createJWT = (id) => {
+  //Signs token and adds userID as the payload
   const access_token = jwt.sign({
     "id": id
   }, process.env.ACCESS_TOKEN_SECRET, {
@@ -57,6 +57,5 @@ const createJWT = (id) => {
 
 module.exports = {
   registerUser,
-  loginUser,
-  getUserInfo
+  loginUser
 }

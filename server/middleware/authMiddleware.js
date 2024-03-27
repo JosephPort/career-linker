@@ -3,6 +3,7 @@ const User = require('../models/UserModel')
 require('dotenv').config()
 
 const protect = async (req, res, next) => {
+  //Makes sure bearer token is included in auth header
   if (req.headers.authorization.startsWith('Bearer')) 
   {
     try {
@@ -17,8 +18,9 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ message: error.message })
     }
   }
+  //If token is not included auth failed
   else{
-    res.status(401).json({ message: 'Verification failed' })
+    res.status(401).json({ error: 'Verification failed' })
   }
 }
 
