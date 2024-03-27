@@ -1,4 +1,5 @@
 const Listing = require('../models/ListingModel')
+const User = require('../models/UserModel')
 
 const createListing = async (req, res) => {
   const { title, company, location, description } = req.body
@@ -52,13 +53,16 @@ const applyListing = async (req, res) => {
 }
 
 const viewApplicants = async (req, res) => {
-  const listing = await Listing.findById(req.params.listingID)
+  const listing = await Listing.findById(req.params.id)
 
   const users = await User.find({ _id: { $in: listing.applicants } });
 
   const applicantNames = users.map(user => `${user.first_name} ${user.last_name}`);
 
-  return res.status(200).json({names: applicantNames})
+  return res.status(200).json({
+    names: applicantNames,
+    listing: listing
+  })
 }
 
 module.exports = {
@@ -66,5 +70,6 @@ module.exports = {
   getUserListing,
   getAllListings,
   getSingleListing,
-  applyListing
+  applyListing,
+  viewApplicants
 }

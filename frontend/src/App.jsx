@@ -6,6 +6,7 @@ import MyListings from "./pages/MyListings"
 import CreateListing from "./pages/CreateListing"
 import Register from "./pages/Register"
 import ViewListing from "./pages/ViewListing"
+import MyListInfo from "./pages/MyListInfo"
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/my-listings" element={<MyListings />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/:id" element={<ViewListing />} />
+          <Route path="my-listings/:id" element={<MyListInfo />} />
         </Routes>
       </Router>
     </>
