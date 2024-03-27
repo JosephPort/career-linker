@@ -1,33 +1,18 @@
 require('dotenv').config()
 
 const express = require('express')
-
 const authRoutes = require('./routes/auth')
-
-const jwt = require('jsonwebtoken')
-
+const listingRoutes = require('./routes/listing')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
 const app = express();
 
+app.use(cors())
 app.use(express.json())
-
 app.use(authRoutes)
+app.use(listingRoutes)
 
-function authenticateToken(req, res, next){
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
-  if (token == null)
-    return res.sendStatus(404)
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) 
-      return res.sendStatus(403)
-
-    req.user = user
-    next()
-  })
-}
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     app.listen(process.env.PORT, () => {

@@ -18,16 +18,16 @@ const listingSchema = new Schema({
   description: {
     type: String,
     required: true
+  },
+  creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
+  applicants: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "User"
   }
-  // creator: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "User",
-  //   required: true
-  // },
-  // applicants: {
-  //   type: [mongoose.Schema.Types.ObjectId],
-  //   ref: "User"
-  // }
 })
 
 module.exports = mongoose.model("Listing", listingSchema)
