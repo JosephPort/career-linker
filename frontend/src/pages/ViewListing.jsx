@@ -1,41 +1,18 @@
-import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import axios from "axios"
+import useGetListing from '../hooks/useGetListing'
+import useApplyListing from '../hooks/useApplyListing'
 
 const ViewListing = () => {
-  const [listing, setListing] = useState([])
   const params = useParams()
   const id = params.id
 
-  useEffect( () => {
-    getListings()
-  }, []);
+  const listing = useGetListing(id)
+  const applyListing = useApplyListing();
 
-  const getListings = async () => {
-    await axios.get(`http://localhost:4000/get-listing/${id}`)
-    .then(response => {
-      setListing(response.data)
-    })
-    .catch(error => {
-      console.log(error.response)
-    })
+  const handleApply = () => {
+    applyListing(id);
   }
 
-  const applyListing = async () => {
-    await axios.post(`http://localhost:4000/apply/${id}`,
-    {},
-    {
-      headers: {
-        'authorization': `Bearer ${JSON.parse(localStorage.getItem('token'))}`
-      }
-    })
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.log(error.response.data.error)
-    })
-  }
   return (
   <div className="flex flex-col h-screen items-center p-20 text-sm">
     <h1 className='text-2xl font-bold'>
@@ -53,7 +30,7 @@ const ViewListing = () => {
       </p>
     </div>
     <button 
-    onClick={applyListing}
+    onClick={handleApply}
     className="bg-red-700 w-64 h-10 rounded mx-auto block mt-4 text-white">
       Apply
     </button>

@@ -1,30 +1,12 @@
-import { useEffect, useState } from "react"
-import axios from "axios"
 import MyLisComp from "../components/MyLisComp";
+import useMyListings from "../hooks/useMyListings";
 
 const MyListings = () => {
-  const [listings, setListings] = useState([])
+  const listings = useMyListings();
 
-  useEffect( () => {
-    getListings()
-  }, []);
-
-  const getListings = async () => {
-    await axios.get('http://localhost:4000/get-listings', 
-    {
-      headers: {
-        'authorization': `Bearer ${JSON.parse(localStorage.getItem('token'))}`
-      }
-    })
-    .then(response => {
-      setListings(response.data)
-    })
-    .catch(error => {
-      console.log(error.response)
-    })
-  }
   return (
     <div className="flex flex-col h-screen items-center p-20">
+        {/* Map over the listings array and render a MyLisComp component for each listing */}
         {listings.map((listing, index) => (
           <MyLisComp key={index} listing={listing} />
         ))}

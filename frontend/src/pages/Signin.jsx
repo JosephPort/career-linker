@@ -1,35 +1,18 @@
 import { NavLink } from "react-router-dom"
-import axios from "axios";
 import { useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
+import useLogin from "../hooks/useLogin";
 
 const SignIn = () => {
+  const { dispatch } = useAuthContext()
+  const { login, error } = useLogin()
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const [error, setError] = useState('')
-
-  const { dispatch } = useAuthContext()
-
   const loginPress = async (e) => {
     e.preventDefault()
-
-    await axios.post('http://localhost:4000/login', 
-    {
-      username: username,
-      password: password
-    })
-    .then(response => {
-      console.log(response.data.user);
-      setError('')
-      localStorage.setItem('token', JSON.stringify(response.data.token))
-
-      // update the auth context
-      dispatch({type: 'LOGIN'})
-    })
-    .catch(error => {
-      setError(error.response.data.error);
-    })
+    login(username, password, dispatch)
   }
 
   return (

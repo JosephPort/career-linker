@@ -1,7 +1,9 @@
 import { useState } from "react"
-import axios from "axios"
+import useCreateListing from "../hooks/useCreateListing"
 
 const CreateListing = () => {
+  const createListing = useCreateListing()
+
   const [title, setTitle] = useState('')
   const [company, setCompany] = useState('')
   const [location, setLocation] = useState('')
@@ -10,25 +12,9 @@ const CreateListing = () => {
   const createPress = async (e) => {
     e.preventDefault()
 
-    await axios.post('http://localhost:4000/create-listing', 
-    {
-      title: title,
-      company: company,
-      location: location,
-      description: description,
-    },
-    {
-      headers: {
-        'authorization': `Bearer ${JSON.parse(localStorage.getItem('token'))}`
-      }
-    })
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.log(error.response)
-    })
+    createListing(title, company, location, description)
   }
+  
   return (
     <div className="flex flex-col h-screen items-center pt-20">
       <h2 className="text-2xl font-medium" >

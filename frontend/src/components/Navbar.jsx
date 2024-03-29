@@ -9,6 +9,7 @@ const Navbar = () => {
     // dispatch logout action
     dispatch({ type: 'LOGOUT' })
   }
+
   return (
     <nav className="w-screen h-14 flex justify-between items-center text-white bg-black fixed">
       <Link to="/" className="ml-4 text-2xl font-semibold">
@@ -18,12 +19,12 @@ const Navbar = () => {
         {isLoggedIn ? (
           <>
             <li>
-              <NavLink className={"align-middle [&.active]:text-red-700"} to="/create-listing">
+              <NavLink className="align-middle [&.active]:text-red-700" to="/create-listing">
                 Create Listing
               </NavLink>
             </li>
             <li>
-              <NavLink className={"align-middle [&.active]:text-red-700"} to="/my-listings">
+              <NavLink className="align-middle [&.active]:text-red-700" to="/my-listings">
                 My Listings
               </NavLink>
             </li>
@@ -49,7 +50,7 @@ const Navbar = () => {
         )}
       </ul>
     </nav>
-  )
+  );
 }
 
 export default Navbar

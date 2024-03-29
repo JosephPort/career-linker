@@ -1,10 +1,11 @@
-import { NavLink } from "react-router-dom"
-import axios from "axios"
+import { Link } from "react-router-dom"
 import { useState } from "react"
 import { useAuthContext } from "../hooks/useAuthContext"
+import useRegister from "../hooks/useRegiser"
 
 const Register = () => {
   const { dispatch } = useAuthContext()
+  const { register, error } = useRegister();
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -13,35 +14,9 @@ const Register = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  const [error, setError] = useState('')
-
   const registerPress = async (e) => {
-    e.preventDefault()
-
-    if (password != confirmPassword){
-      setError("Passwords are not the same")
-      return
-    }
-
-    await axios.post('http://localhost:4000/register', 
-    {
-      email: email,
-      first_name: firstName,
-      last_name: lastName,
-      username: username,
-      password: password
-    })
-    .then(response => {
-      console.log(response.data);
-      // save the user to local storage
-      localStorage.setItem('token', JSON.stringify(response.data.token))
-      // update the auth context
-      dispatch({type: 'LOGIN'})
-      setError('')
-    })
-    .catch(error => {
-      setError(error.response.data.error)
-    })
+    e.preventDefault();
+    register(email, firstName, lastName, username, password, confirmPassword, dispatch);
   }
 
   return (
@@ -90,9 +65,9 @@ const Register = () => {
           <p className="text-center mt-4 text-red-700 font-semibold text-sm">{error}</p>
         </form>
       </div>
-      <NavLink to="/login" className="mt-12">
+      <Link to="/login" className="mt-12">
           Already have an account? <span className="underline">Sign in</span>
-      </NavLink>
+      </Link>
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const MyLisComp = ({listing}) => {
   return (
-    <div className='border w-96 mt-4 rounded border-gray-400 p-2'>
+    <div className='border w-96 mt-4 rounded border-gray-400 p-2 sm:w-full sm:mx-auto sm:max-w-md'>
       <Link to={`/my-listings/${listing._id}`} className='font-bold justify-center text-red-700 text-xl'>
         {listing.title}
       </Link>

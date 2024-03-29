@@ -3,27 +3,24 @@ import { createContext, useEffect, useReducer } from 'react';
 export const AuthContext = createContext();
 
 export const authReducer = (state, action) => {
-  //Sets variables accessed by navbar so it can display correct elements
   switch (action.type) {
     case 'LOGIN':
-      return { isLoggedIn: true };
+      return { isLoggedIn: true }; // Set isLoggedIn to true when user logs in
     case 'LOGOUT':
-      return { isLoggedIn: false };
+      return { isLoggedIn: false }; // Set isLoggedIn to false when user logs out
   }
 };
 
 export const AuthContextProvider = ({ children }) => {
-  //Inits isLoggedIn to false
   const [state, dispatch] = useReducer(authReducer, {
-    isLoggedIn: false
+    isLoggedIn: false // Initialize isLoggedIn to false
   });
 
-  //Checks if the user is already logged in on initial start
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem('token'));
 
     if (token) {
-      dispatch({ type: 'LOGIN' });
+      dispatch({ type: 'LOGIN' }); // Check if user is already logged in on initial start
     }
   }, []);
 
