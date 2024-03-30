@@ -3,12 +3,12 @@ const { createListing, getUserListing, getAllListings, getSingleListing, applyLi
 const { protect } = require('../middleware/authMiddleware')
 const router = express.Router()
 
-router.get('/listings', getAllListings)
 router.get('/get-listing/:id', getSingleListing)
+router.get('/listings', getAllListings)
+
 router.post('/create-listing', protect, createListing)
 router.post('/apply/:id', protect, applyListing)
 router.get('/get-listings', protect, getUserListing)
 router.get('/get-applicants/:id', protect, viewApplicants)
-
 
 module.exports = router

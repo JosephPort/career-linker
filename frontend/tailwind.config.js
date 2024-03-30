@@ -11,6 +11,9 @@ export default {
       },
     },
   },
+  variants: {
+    borderColor: ['responsive', 'hover', 'focus'], // add 'focus' here
+  },
   plugins: [],
 }
 
